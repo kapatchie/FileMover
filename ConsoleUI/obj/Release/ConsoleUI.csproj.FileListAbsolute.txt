@@ -1,0 +1,7 @@
+C:\Users\Lunartech\source\repos\FileSystemDeom\ConsoleUI\bin\Release\ConsoleUI.exe.config
+C:\Users\Lunartech\source\repos\FileSystemDeom\ConsoleUI\bin\Release\ConsoleUI.exe
+C:\Users\Lunartech\source\repos\FileSystemDeom\ConsoleUI\bin\Release\ConsoleUI.pdb
+C:\Users\Lunartech\source\repos\FileSystemDeom\ConsoleUI\obj\Release\ConsoleUI.csprojAssemblyReference.cache
+C:\Users\Lunartech\source\repos\FileSystemDeom\ConsoleUI\obj\Release\ConsoleUI.csproj.CoreCompileInputs.cache
+C:\Users\Lunartech\source\repos\FileSystemDeom\ConsoleUI\obj\Release\ConsoleUI.exe
+C:\Users\Lunartech\source\repos\FileSystemDeom\ConsoleUI\obj\Release\ConsoleUI.pdb
