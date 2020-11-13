@@ -1,19 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.IO;
 using System.Reflection;
-using System.Linq.Expressions;
-using System.Text.RegularExpressions;
+using System.Text;
 
 namespace ConsoleUI
 {
-    static class  FileManager
+    static class FileManager
     {
-        public static bool checkDestination(bool createDestination,string path)
-        { 
+        public static bool checkDestination(bool createDestination, string path)
+        {
             if (createDestination)
             {
                 if (!Directory.Exists(path))
@@ -33,23 +29,23 @@ namespace ConsoleUI
         {
             return Directory.GetFiles(rootPath, $"*.{Extension}");
         }
-        public static void MoveFile(string newLocation, string Extension,string rootPath,string Destination)
+        public static void MoveFile(string newLocation, string Extension, string rootPath, string Destination)
         {
             newLocation = Path.Combine(Destination, newLocation);
             string[] filesToMove = GetFilesToMove(rootPath, Extension);
 
-                foreach (var file in filesToMove)
-                {
-                    string newFileName = UnwantedTextRemover(Path.GetFileName(file), "y2mate.com - ");
-                    newFileName = Path.Combine(newLocation, newFileName);
+            foreach (var file in filesToMove)
+            {
+                string newFileName = UnwantedTextRemover(Path.GetFileName(file), "y2mate.com - ");
+                newFileName = Path.Combine(newLocation, newFileName);
                 if (!File.Exists(newFileName))
                 {
                     File.Move(file, newFileName);
                     Console.WriteLine("Moving File " + Path.GetFileName(file));
                 }
                 else
-                {Console.WriteLine($"File :{ Path.GetFileName(file)} all ready exists skipping file " );}
-                }
+                { Console.WriteLine($"File :{ Path.GetFileName(file)} all ready exists skipping file "); }
+            }
         }
 
         private static string UnwantedTextRemover(string text, string unwanted)
@@ -58,7 +54,7 @@ namespace ConsoleUI
         }
         public static void saveData(List<string> fileDestinations)
         {
-            string path = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location),"Data");
+            string path = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "Data");
             string fileDestinationPath = path + @"\fileDestinations.txt";
             StringBuilder sb = new StringBuilder();
             StreamWriter sw;
@@ -95,15 +91,14 @@ namespace ConsoleUI
 
                 foreach (var data in dataArray)
                 {
-                    string dataUnescaped = Regex.Unescape(data);
-                    if (!string.IsNullOrEmpty(dataUnescaped))
+                    if (!string.IsNullOrEmpty(data))
                     {
                         dataList.Add(data);
                     }
                 }
                 return dataList;
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 Console.WriteLine(e);
                 return dataList;

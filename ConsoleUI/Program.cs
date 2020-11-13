@@ -1,10 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.IO;
-using System.Runtime.InteropServices.WindowsRuntime;
+using System.Linq;
 
 namespace ConsoleUI
 {
@@ -28,7 +25,7 @@ namespace ConsoleUI
                 if (!CompairString(createPathText, "yes"))
                 { createPath = true; }
 
-                fileDestinations.AddRange(EnterFileDesitnations(fileDestinations,createPath));
+                fileDestinations.AddRange(EnterFileDesitnations(fileDestinations, createPath));
                 fileExtensions.AddRange(EnterExtensions(fileExtensions));
                 Console.WriteLine("Preparing to Move:");
                 if (fileExtensions.Count != 0)
@@ -38,8 +35,9 @@ namespace ConsoleUI
                 MoveFiles(fileDestinations, fileExtensions, createPath);
                 Console.WriteLine("Do You want to move more files ?");
                 if (!CompairString(Console.ReadLine().ToLower(), "yes"))
-                { enterData = false; FileManager.saveData(fileDestinations);
-                 Console.ReadLine();
+                {
+                    enterData = false; FileManager.saveData(fileDestinations);
+                    Console.ReadLine();
                 }
             }
         }
@@ -82,11 +80,16 @@ namespace ConsoleUI
                     Console.WriteLine("Please enter a Numerical Value Between 1 - 5");
                     loop = true;
                 }
+                if (value >= 6)
+                {
+                    Console.WriteLine("Please enter a Numerical Value Between 1 - 5");
+                    loop = true;
+                }
 
             } while (loop);
 
-                FileData fileData = new FileData(value);
-                fileExtensions.AddRange(fileData.fileExtensions);
+            FileData fileData = new FileData(value);
+            fileExtensions.AddRange(fileData.fileExtensions);
 
             return fileExtensions;
         }
@@ -97,7 +100,7 @@ namespace ConsoleUI
 
             for (int i = 0; i < fileExtensions.Count; i++)
             {
-                    FileManager.MoveFile(fileDestinations.Last(), fileExtensions[i], rootPath, Destination);
+                FileManager.MoveFile(fileDestinations.Last(), fileExtensions[i], rootPath, Destination);
             }
         }
     }

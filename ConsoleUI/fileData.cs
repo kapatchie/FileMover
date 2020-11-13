@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace ConsoleUI
 {
@@ -11,59 +6,26 @@ namespace ConsoleUI
     {
         private List<string> fileType = new List<string>();
         public List<string> fileExtensions;
-
-       private enum FileType
-        {
-            Audio,
-            Video,
-            Executable,
-            Compressed,
-            Image,
-            Default
-        }
-
         public FileData(int type)
         {
-            FileType fileType;
             switch (type)
             {
                 case 1:
-                    fileType = FileType.Audio;
+                    this.fileExtensions = VideoData();
                     break;
                 case 2:
-                    fileType = FileType.Video;
+                    this.fileExtensions = AudioData();
                     break;
                 case 3:
-                    fileType = FileType.Compressed;
-                    break;
-                case 4:
-                    fileType = FileType.Executable;
-                    break;
-                case 5:
-                    fileType = FileType.Image;
-                    break;
-                default:
-                    fileType = FileType.Default;
-                    break;
-            }
-            switch(fileType)
-            {
-                case FileType.Video:
-                   this.fileExtensions = VideoData();
-                    break;
-                case FileType.Audio:
-                    this . fileExtensions = AudioData();
-                    break;
-                case FileType.Compressed:
                     this.fileExtensions = CompressedData();
                     break;
-                case FileType.Executable:
+                case 4:
                     this.fileExtensions = ExecutableData();
                     break;
-                case FileType.Image:
-                    this.fileExtensions =ImageData();
-                     break;
-                case FileType.Default:
+                case 5:
+                    this.fileExtensions = ImageData();
+                    break;
+                default:
                     this.fileExtensions = new List<string>();
                     break;
             }
