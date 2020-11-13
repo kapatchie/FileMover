@@ -4,100 +4,101 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.IO;
-
-
+using System.Runtime.InteropServices.WindowsRuntime;
 
 namespace ConsoleUI
 {
     class Program
     {
-        /* The Program has been Updated: 
-         * 
-         * 
-         * To-Do
-         * Add A Winform Ui
-         * MultiThreding on File move (Max two threads)
-         */
         static void Main(string[] args)
         {
-            
             Console.WriteLine("File Mover");
-            Console.WriteLine(@"Please Enter the Destination Folder anywhere on desktop if it is inside a Folder please use the following format: Example\Example");
 
             bool enterData = true;
-            List<string> fileDestinations = new List<string>();
-            List<string> fileExtensions = new List<string>();
-            string path;
-
-            bool createPath = false;
-            Console.WriteLine("Do you want the Destination to be Created Yes/No");
-            string createPathText = Console.ReadLine();
-
-            if (!CompairString(createPathText, "yes"))
-            {
-                createPath = true;
-            }
-
             while (enterData)
             {
-                fileDestinations.Add(Console.ReadLine());
-                path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), fileDestinations.Last());
+                List<string> fileDestinations = new List<string>();
+                List<string> fileExtensions = new List<string>();
 
-                if (!FileManager.checkDestination(createPath,path))
+                //fileDestinations.AddRange(FileManager.loadData("\\fileDestinations.txt"));
+
+                bool createPath = false;
+                Console.WriteLine("Do you want the Destination to be Created Yes/No");
+                string createPathText = Console.ReadLine();
+                if (!CompairString(createPathText, "yes"))
+                { createPath = true; }
+
+                fileDestinations.AddRange(EnterFileDesitnations(fileDestinations,createPath));
+                fileExtensions.AddRange(EnterExtensions(fileExtensions));
+                Console.WriteLine("Preparing to Move:");
+                if (fileExtensions.Count != 0)
                 {
-                    Directory.CreateDirectory(path);
+                    Console.WriteLine("Done!");
                 }
-
-                Console.WriteLine();
-                Console.WriteLine("Do you want to enter more files (yes/no)");
-                string Continue = Console.ReadLine();
-
-                if (!CompairString(Continue, "yes"))
-                {
-                    enterData = false;
+                MoveFiles(fileDestinations, fileExtensions, createPath);
+                Console.WriteLine("Do You want to move more files ?");
+                if (!CompairString(Console.ReadLine().ToLower(), "yes"))
+                { enterData = false; FileManager.saveData(fileDestinations);
+                 Console.ReadLine();
                 }
-
-                Console.WriteLine();
             }
+        }
 
-            enterData = true;
+        private static bool CompairString(string textToCompair, string comapiredWith)
+        {
+            return string.Equals(textToCompair, comapiredWith, StringComparison.OrdinalIgnoreCase);
+        }
+        private static List<string> EnterFileDesitnations(List<string> fileDestinations, bool createPath)
+        {
+            Console.WriteLine("Please Enter the Destination Folder anywhere on desktop if it is inside a Folder please use the following format: \n Example\\Example");
+            fileDestinations.Add(Console.ReadLine());
+            string path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), fileDestinations.Last());
 
-            while (enterData)
+            if (!FileManager.checkDestination(createPath, path))
             {
-                Console.WriteLine("Please enter a file extension");
-                fileExtensions.Add(Console.ReadLine());
-
-                Console.WriteLine();
-                Console.WriteLine("Do you want to enter more files (yes/no)");
-                string Continue = Console.ReadLine();
-
-                if (!CompairString(Continue,"yes"))
-                {
-                    enterData = false;
-                }
-                Console.WriteLine();
+                Directory.CreateDirectory(path);
             }
 
-            Console.WriteLine("Preparing to Move:");
+            Console.WriteLine();
+            return fileDestinations;
+        }
+        private static List<string> EnterExtensions(List<string> fileExtensions)
+        {
+            int value;
+            bool loop;
+            do
+            {
+                loop = false;
+                Console.WriteLine("Please Choose a Number");
+                Console.WriteLine("[1] Audio Files");
+                Console.WriteLine("[2] Video Files");
+                Console.WriteLine("[3] Compressed Files");
+                Console.WriteLine("[4] Executable Files");
+                Console.WriteLine("[5] Image Files");
 
+                if (!int.TryParse(Console.ReadLine(), out value))
+                {
+                    Console.Clear();
+                    Console.WriteLine("Please enter a Numerical Value Between 1 - 5");
+                    loop = true;
+                }
+
+            } while (loop);
+
+                FileData fileData = new FileData(value);
+                fileExtensions.AddRange(fileData.fileExtensions);
+
+            return fileExtensions;
+        }
+        private static void MoveFiles(List<string> fileDestinations, List<string> fileExtensions, bool createPath)
+        {
             string Destination = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
             string rootPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "Downloads");
 
-            foreach (var desination in fileDestinations)
+            for (int i = 0; i < fileExtensions.Count; i++)
             {
-                foreach (var extension in fileExtensions)
-                {
-                    FileManager.MoveFiles(desination, extension,rootPath,Destination);
-                }
+                    FileManager.MoveFile(fileDestinations.Last(), fileExtensions[i], rootPath, Destination);
             }
-
-            Console.WriteLine("Done!");
-            Console.ReadLine();
-        }
-
-        private static bool CompairString(string textToCompair,string comapiredWith)
-        {
-            return string.Equals(textToCompair, comapiredWith, StringComparison.OrdinalIgnoreCase);
         }
     }
 }
