@@ -10,10 +10,10 @@ namespace ConsoleUI
         {
             switch (type)
             {
-                case 1:
+                case 2:
                     this.fileExtensions = VideoData();
                     break;
-                case 2:
+                case 1:
                     this.fileExtensions = AudioData();
                     break;
                 case 3:

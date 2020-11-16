@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 
 namespace ConsoleUI
 {
@@ -10,33 +9,37 @@ namespace ConsoleUI
         static void Main(string[] args)
         {
             Console.WriteLine("File Mover");
-
             bool enterData = true;
             while (enterData)
             {
-                List<string> fileDestinations = new List<string>();
-                List<string> fileExtensions = new List<string>();
+                List<Repository> fileRepositories = new List<Repository>();
 
-                //fileDestinations.AddRange(FileManager.loadData("\\fileDestinations.txt"));
+                Console.WriteLine("Do you want to work from a Saved File ? yes/no");
 
-                bool createPath = false;
-                Console.WriteLine("Do you want the Destination to be Created Yes/No");
-                string createPathText = Console.ReadLine();
-                if (!CompairString(createPathText, "yes"))
-                { createPath = true; }
-
-                fileDestinations.AddRange(EnterFileDesitnations(fileDestinations, createPath));
-                fileExtensions.AddRange(EnterExtensions(fileExtensions));
-                Console.WriteLine("Preparing to Move:");
-                if (fileExtensions.Count != 0)
+                if (!string.Equals(Console.ReadLine(), "yes", StringComparison.OrdinalIgnoreCase))
                 {
-                    Console.WriteLine("Done!");
+                    bool createPath = false;
+                    Console.WriteLine("Do you want the Destination to be Created Yes/No");
+                    string createPathText = Console.ReadLine();
+                    if (!CompairString(createPathText, "yes"))
+                    { createPath = true; }
+                    fileRepositories.Add(new Repository(EnterFileDesitnations(createPath), GetExtensionsValue()));
                 }
-                MoveFiles(fileDestinations, fileExtensions, createPath);
-                Console.WriteLine("Do You want to move more files ?");
-                if (!CompairString(Console.ReadLine().ToLower(), "yes"))
+                else
                 {
-                    enterData = false; FileManager.saveData(fileDestinations);
+                    fileRepositories.AddRange(FileManager.loadData());
+                }
+
+                Console.WriteLine("Preparing to Move:");
+                FileManager.MoveFiles(fileRepositories);
+                Console.WriteLine(UIController.Instance.text);
+                Console.WriteLine("Done!");
+
+                Console.WriteLine("Do You want to move more files ?");
+                if (!CompairString(Console.ReadLine(), "yes"))
+                {
+                    enterData = false;
+                    FileManager.saveData(fileRepositories);
                     Console.ReadLine();
                 }
             }
@@ -46,21 +49,18 @@ namespace ConsoleUI
         {
             return string.Equals(textToCompair, comapiredWith, StringComparison.OrdinalIgnoreCase);
         }
-        private static List<string> EnterFileDesitnations(List<string> fileDestinations, bool createPath)
+        private static string EnterFileDesitnations(bool createPath)
         {
+            string Destination;
             Console.WriteLine("Please Enter the Destination Folder anywhere on desktop if it is inside a Folder please use the following format: \n Example\\Example");
-            fileDestinations.Add(Console.ReadLine());
-            string path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), fileDestinations.Last());
+            Destination = Console.ReadLine();
+            string path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), Destination);
 
-            if (!FileManager.checkDestination(createPath, path))
-            {
-                Directory.CreateDirectory(path);
-            }
-
+            FileManager.checkDestination(createPath, path);
             Console.WriteLine();
-            return fileDestinations;
+            return Destination;
         }
-        private static List<string> EnterExtensions(List<string> fileExtensions)
+        private static int GetExtensionsValue()
         {
             int value;
             bool loop;
@@ -76,32 +76,18 @@ namespace ConsoleUI
 
                 if (!int.TryParse(Console.ReadLine(), out value))
                 {
-                    Console.Clear();
-                    Console.WriteLine("Please enter a Numerical Value Between 1 - 5");
+                    Console.WriteLine(@"Please enter a Numerical Value Between 1 - 5\n\r");
                     loop = true;
                 }
-                if (value >= 6)
+                if (value >= 5)
                 {
-                    Console.WriteLine("Please enter a Numerical Value Between 1 - 5");
+                    Console.WriteLine(@"Please enter a Numerical Value Between 1 - 5\n\r");
                     loop = true;
                 }
 
             } while (loop);
-
-            FileData fileData = new FileData(value);
-            fileExtensions.AddRange(fileData.fileExtensions);
-
-            return fileExtensions;
+            return value;
         }
-        private static void MoveFiles(List<string> fileDestinations, List<string> fileExtensions, bool createPath)
-        {
-            string Destination = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
-            string rootPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "Downloads");
-
-            for (int i = 0; i < fileExtensions.Count; i++)
-            {
-                FileManager.MoveFile(fileDestinations.Last(), fileExtensions[i], rootPath, Destination);
-            }
-        }
+        
     }
 }
