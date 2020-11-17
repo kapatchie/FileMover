@@ -130,7 +130,7 @@ namespace ConsoleUI
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
+                UIController.Instance.text = Environment.NewLine + e;
                 return dataList;
             }
         }
